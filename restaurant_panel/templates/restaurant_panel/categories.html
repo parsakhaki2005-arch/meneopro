@@ -1,0 +1,25 @@
+{% extends "restaurant_panel/base.html" %}
+{% block title %}دستهبندیها{% endblock %}
+{% block header_title %}مدیریت دستهبندیها{% endblock %}
+{% block content %}
+<div class="page-heading">
+    <div><span class="eyebrow">MENU CATEGORIES</span><h1>دستهبندیهای منو</h1><p>گروههای مختلف محصولات رستوران را مدیریت کنید.</p></div>
+    <a class="btn btn-primary" href="{% url 'panel:category_add' restaurant.slug %}">＋ دستهبندی جدید</a>
+</div>
+<div class="panel-card"><div class="table-wrap"><table>
+<thead><tr><th>نام دستهبندی</th><th>وضعیت</th><th>ترتیب نمایش</th><th>عملیات</th></tr></thead>
+<tbody>
+{% for category in categories %}
+<tr>
+<td><strong>{{ category.name }}</strong></td>
+<td>{% if category.is_active %}<span class="status status-on">فعال</span>{% else %}<span class="status status-off">غیرفعال</span>{% endif %}</td>
+<td>{{ category.sort_order }}</td>
+<td class="actions">
+<a class="text-action" href="{% url 'panel:category_edit' restaurant.slug category.id %}">ویرایش</a>
+<form method="post" action="{% url 'panel:category_delete' restaurant.slug category.id %}" onsubmit="return confirm('این دستهبندی حذف شود')">
+{% csrf_token %}<button class="text-action danger" type="submit">حذف</button></form>
+</td>
+</tr>
+{% empty %}<tr><td colspan="4" class="empty-cell">هنوز دستهبندی ثبت نشده است.</td></tr>{% endfor %}
+</tbody></table></div></div>
+{% endblock %}

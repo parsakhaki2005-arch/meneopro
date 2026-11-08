@@ -1,0 +1,39 @@
+{% extends "restaurant_panel/base.html" %}
+{% block title %}داشبورد{% endblock %}
+{% block header_title %}داشبورد رستوران{% endblock %}
+{% block content %}
+<div class="page-heading">
+    <div><span class="eyebrow">OVERVIEW</span>
+    <h1>سلام به پنل {{ restaurant.name }} خوش آمدید</h1>
+    <p>وضعیت منوی دیجیتال رستوران خود را از این بخش مدیریت کنید.</p></div>
+    <a class="btn btn-primary" href="{% url 'panel:item_add' restaurant.slug %}">＋ افزودن محصول جدید</a>
+</div>
+<div class="stats-grid">
+    <div class="stat-card"><span class="stat-icon purple">▤</span><span class="stat-label">دستهبندیها</span><strong>{{ category_count }}</strong><small>تعداد دستهبندیهای ثبتشده</small></div>
+    <div class="stat-card"><span class="stat-icon orange">🍽</span><span class="stat-label">کل محصولات</span><strong>{{ item_count }}</strong><small>تعداد محصولات منو</small></div>
+    <div class="stat-card"><span class="stat-icon green">✓</span><span class="stat-label">محصولات قابل سفارش</span><strong>{{ available_count }}</strong><small>فعال و موجود</small></div>
+    <div class="stat-card"><span class="stat-icon red">◷</span><span class="stat-label">ناموجود</span><strong>{{ unavailable_count }}</strong><small>در حال حاضر قابل ارائه نیست</small></div>
+</div>
+<div class="content-grid">
+    <div class="panel-card">
+        <div class="card-heading"><div><h2>آخرین محصولات ثبتشده</h2><p>آخرین تغییرات منوی رستوران</p></div><a href="{% url 'panel:items' restaurant.slug %}">مشاهده همه</a></div>
+        {% for item in recent_items %}
+        <div class="recent-row">
+            <div class="food-thumb">{% if item.image %}<img src="{{ item.image.url }}" alt="{{ item.name }}">{% else %}🍽{% endif %}</div>
+            <div class="recent-info"><strong>{{ item.name }}</strong><small>{% if item.category %}{{ item.category.name }}{% else %}بدون دستهبندی{% endif %}</small></div>
+            <span class="price">{{ item.effective_price|default:item.price }} تومان</span>
+        </div>
+        {% empty %}
+        <div class="empty-inline">هنوز محصولی ثبت نشده است. اولین محصول منو را اضافه کنید.</div>
+        {% endfor %}
+    </div>
+    <div class="panel-card quick-card">
+        <h2>دسترسی سریع</h2><p>مدیریت منوی رستوران در چند قدم ساده</p>
+        <a class="quick-action" href="{% url 'panel:item_add' restaurant.slug %}"><span>＋</span><div><strong>افزودن محصول</strong><small>نام قیمت و تصویر محصول</small></div>←</a>
+        <a class="quick-action" href="{% url 'panel:category_add' restaurant.slug %}"><span>▤</span><div><strong>ساخت دستهبندی</strong><small>مانند پیشغذا و غذای اصلی</small></div>←</a>
+        <a class="quick-action" href="{% url 'panel:settings' restaurant.slug %}"><span>⚙</span><div><strong>تنظیمات منو</strong><small>رنگ واحد پول و نمایش قیمت</small></div>←</a>
+        <a class="quick-action" href="{% url 'panel:qr' restaurant.slug %}"><span>▦</span><div><strong>کد QR اختصاصی</strong><small>دریافت و چاپ کد منو</small></div>←</a>
+        <a class="quick-action" href="/m/{{ restaurant.slug }}/" target="_blank" rel="noopener"><span>↗</span><div><strong>مشاهده منوی مشتری</strong><small>نمایش نسخه عمومی منو</small></div>←</a>
+    </div>
+</div>
+{% endblock %}

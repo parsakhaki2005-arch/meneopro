@@ -1,0 +1,79 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#20243a">
+    <title>{% block title %}پنل مدیریت رستوران{% endblock %} | منوپرو</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'restaurant_panel/css/panel.css' %}">
+</head>
+<body>
+<div class="app-shell">
+    {% if user.is_authenticated %}
+    <aside class="sidebar">
+        <a class="brand" href="{% url 'panel:index' %}">
+            <span class="brand-icon">M</span>
+            <span>منو<span class="brand-light">پرو</span></span>
+        </a>
+        <div class="sidebar-caption">مدیریت رستوران</div>
+
+        {% if restaurant %}
+        <div class="restaurant-chip">
+            <span class="restaurant-avatar">{{ restaurant.name|slice:":1" }}</span>
+            <span><strong>{{ restaurant.name }}</strong><small>پنل اختصاصی رستوران</small></span>
+        </div>
+        <nav class="side-nav">
+            <a href="{% url 'panel:dashboard' restaurant.slug %}"><span class="nav-icon">▦</span><span>داشبورد</span></a>
+            <a href="{% url 'panel:categories' restaurant.slug %}"><span class="nav-icon">▤</span><span>دستهبندیها</span></a>
+            <a href="{% url 'panel:items' restaurant.slug %}"><span class="nav-icon">🍽</span><span>مدیریت محصولات</span></a>
+            <a href="{% url 'panel:item_add' restaurant.slug %}"><span class="nav-icon">＋</span><span>افزودن محصول</span></a>
+            <a href="{% url 'panel:category_add' restaurant.slug %}"><span class="nav-icon">＋</span><span>افزودن دستهبندی</span></a>
+            <a href="{% url 'panel:settings' restaurant.slug %}"><span class="nav-icon">⚙</span><span>تنظیمات منو</span></a>
+            <a href="{% url 'panel:qr' restaurant.slug %}"><span class="nav-icon">▦</span><span>کد QR اختصاصی</span></a>
+            <a href="/m/{{ restaurant.slug }}/" target="_blank" rel="noopener"><span class="nav-icon">↗</span><span>مشاهده منوی مشتری</span></a>
+        </nav>
+        {% endif %}
+
+        <div class="sidebar-bottom">
+            <div class="user-mini">
+                <div class="user-avatar">{{ user.username|slice:":1"|upper }}</div>
+                <div class="user-info"><strong>{{ user.username }}</strong><small>حساب مدیریت</small></div>
+            </div>
+            <form method="post" action="{% url 'panel:logout' %}">
+                {% csrf_token %}
+                <button class="logout-button" type="submit">خروج از حساب</button>
+            </form>
+        </div>
+    </aside>
+    {% endif %}
+
+    <main class="main-area {% if not user.is_authenticated %}main-full{% endif %}">
+        {% if user.is_authenticated %}
+        <header class="topbar">
+            <div>
+                <span class="topbar-label">MENUPRO MANAGEMENT</span>
+                <strong>{% block header_title %}پنل مدیریت{% endblock %}</strong>
+            </div>
+            {% if restaurant %}
+            <a class="public-link" href="/m/{{ restaurant.slug }}/" target="_blank" rel="noopener">مشاهده منوی عمومی ↗</a>
+            {% endif %}
+        </header>
+        {% endif %}
+
+        <section class="page-content">
+            {% if messages %}
+                {% for message in messages %}
+                    <div class="alert alert-{{ message.tags }}">{{ message }}</div>
+                {% endfor %}
+            {% endif %}
+            {% block content %}{% endblock %}
+        </section>
+        <footer class="footer">منوپرو · مدیریت هوشمند منوی دیجیتال</footer>
+    </main>
+</div>
+</body>
+</html>

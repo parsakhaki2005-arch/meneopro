@@ -1,0 +1,23 @@
+{% extends "restaurant_panel/base.html" %}
+{% block title %}مدیریت محصولات{% endblock %}
+{% block header_title %}مدیریت محصولات{% endblock %}
+{% block content %}
+<div class="page-heading">
+    <div><span class="eyebrow">MENU ITEMS</span><h1>غذاها و نوشیدنیها</h1><p>قیمت تصویر موجودی و وضعیت نمایش هر محصول را مدیریت کنید.</p></div>
+    <a class="btn btn-primary" href="{% url 'panel:item_add' restaurant.slug %}">＋ افزودن محصول</a>
+</div>
+<div class="panel-card"><div class="table-wrap"><table>
+<thead><tr><th>محصول</th><th>دستهبندی</th><th>قیمت</th><th>وضعیت</th><th>عملیات</th></tr></thead>
+<tbody>
+{% for item in items %}
+<tr>
+<td><div class="product-cell"><div class="food-thumb">{% if item.image %}<img src="{{ item.image.url }}" alt="{{ item.name }}">{% else %}🍽{% endif %}</div><strong>{{ item.name }}</strong></div></td>
+<td>{% if item.category %}{{ item.category.name }}{% else %}—{% endif %}</td>
+<td>{% if item.discount_price %}<strong>{{ item.discount_price }} تومان</strong><small class="old-price">{{ item.price }} تومان</small>{% else %}<strong>{{ item.price }} تومان</strong>{% endif %}</td>
+<td>{% if item.is_active and item.is_available %}<span class="status status-on">فعال و موجود</span>{% elif not item.is_active %}<span class="status status-off">مخفی</span>{% else %}<span class="status status-off">ناموجود</span>{% endif %}</td>
+<td class="actions"><a class="text-action" href="{% url 'panel:item_edit' restaurant.slug item.id %}">ویرایش</a>
+<form method="post" action="{% url 'panel:item_delete' restaurant.slug item.id %}" onsubmit="return confirm('این محصول حذف شود')">{% csrf_token %}<button class="text-action danger" type="submit">حذف</button></form></td>
+</tr>
+{% empty %}<tr><td colspan="5" class="empty-cell">هنوز محصولی ثبت نشده است. اولین محصول منو را اضافه کنید.</td></tr>{% endfor %}
+</tbody></table></div></div>
+{% endblock %}

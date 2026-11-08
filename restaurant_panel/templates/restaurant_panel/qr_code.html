@@ -1,0 +1,58 @@
+{% extends "restaurant_panel/base.html" %}
+{% block title %}کد QR اختصاصی{% endblock %}
+{% block header_title %}کد QR اختصاصی{% endblock %}
+{% block content %}
+<div class="page-heading"><div><span class="eyebrow">SMART DIGITAL MENU</span><h1>کد QR اختصاصی {{ restaurant.name }}</h1><p>مشتریان با اسکن این کد مستقیما وارد منوی دیجیتال شما میشوند.</p></div></div>
+<div class="qr-layout">
+<div class="panel-card qr-card">
+<div class="qr-brand"><div class="qr-brand-icon">M</div><div><strong>منوپرو</strong><small>منوی دیجیتال رستوران</small></div></div>
+<div class="qr-restaurant-name">{{ restaurant.name }}</div>
+<div id="qrcode" class="qr-image"></div>
+<h2>منوی دیجیتال ما را اسکن کنید</h2>
+<p>برای مشاهده غذاها قیمتها و جزئیات منو دوربین گوشی را روبهروی کد قرار دهید.</p>
+<div class="qr-url" id="menuUrl">{{ menu_url }}</div>
+<div class="qr-actions"><button class="btn btn-primary" type="button" onclick="downloadQR()">دانلود تصویر QR</button><button class="btn btn-light" type="button" onclick="window.print()">چاپ کارت QR</button></div>
+</div>
+<div class="panel-card qr-info">
+<h2>راهنمای استفاده</h2>
+<div class="qr-step"><span>۱</span><div><strong>دانلود کد</strong><small>تصویر QR را ذخیره کنید.</small></div></div>
+<div class="qr-step"><span>۲</span><div><strong>چاپ روی کارت</strong><small>کد را روی کارت یا استند میز چاپ کنید.</small></div></div>
+<div class="qr-step"><span>۳</span><div><strong>قرار دادن روی میز</strong><small>مشتریان با اسکن کد منو را میبینند.</small></div></div>
+<div class="alert alert-success">این لینک منوی عمومی اختصاصی رستوران شماست.</div>
+<a class="btn btn-light" target="_blank" rel="noopener" href="/m/{{ restaurant.slug }}/">باز کردن منوی عمومی ↗</a>
+</div></div>
+<style>
+.qr-layout{display:grid;grid-template-columns:minmax(300px,1.3fr) minmax(260px,.7fr);gap:20px;align-items:start}
+.qr-card{text-align:center;padding:30px}.qr-brand{display:flex;align-items:center;justify-content:center;gap:10px}
+.qr-brand-icon{width:38px;height:38px;background:#6d5ce8;color:white;border-radius:12px;display:grid;place-items:center;font-weight:900}
+.qr-brand strong,.qr-brand small{display:block}.qr-brand small{font-size:10px;color:#999}
+.qr-restaurant-name{font-size:22px;font-weight:800;margin:25px 0}
+.qr-image{width:230px;height:230px;margin:0 auto 20px;display:grid;place-items:center}
+.qr-image img,.qr-image canvas{max-width:100%;height:auto!important}
+.qr-card h2{font-size:17px}.qr-card p{font-size:12px;color:#85899b}
+.qr-url{font-size:11px;color:#6d5ce8;background:#f5f4ff;padding:11px;border-radius:9px;overflow-wrap:anywhere;direction:ltr}
+.qr-actions{display:flex;justify-content:center;gap:10px;flex-wrap:wrap;margin-top:20px}
+.qr-step{display:flex;align-items:center;gap:12px;padding:16px 0;border-bottom:1px solid #eee}
+.qr-step>span{width:34px;height:34px;background:#efedff;color:#6d5ce8;border-radius:50%;display:grid;place-items:center;font-weight:800}
+.qr-step strong,.qr-step small{display:block}.qr-step small{color:#888;font-size:11px;margin-top:4px}
+@media(max-width:750px){.qr-layout{grid-template-columns:1fr}.qr-card{padding:20px}}
+@media print{body{background:white}.sidebar,.topbar,.footer,.qr-info,.page-heading,.qr-actions{display:none!important}.app-shell,.main-area,.page-content{display:block!important;padding:0!important;margin:0!important}.qr-card{border:0!important;box-shadow:none!important;width:100%;max-width:500px;margin:30px auto}.qr-url{color:#222}}
+</style>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<script>
+(function(){
+ const target=document.getElementById("qrcode");
+ const url=document.getElementById("menuUrl").textContent.trim();
+ if(window.QRCode){new QRCode(target,{text:url,width:230,height:230,colorDark:"#20243a",colorLight:"#ffffff",correctLevel:QRCode.CorrectLevel.H});}
+ else{target.innerHTML="<p>کتابخانه ساخت QR بارگذاری نشد. اتصال اینترنت را بررسی کنید.</p>";}
+})();
+function downloadQR(){
+ const box=document.getElementById("qrcode");
+ const canvas=box.querySelector("canvas");
+ const img=box.querySelector("img");
+ const data=canvas?canvas.toDataURL("image/png"):(img?img.src:null);
+ if(!data){alert("ابتدا باید کد QR ساخته شود.");return;}
+ const a=document.createElement("a");a.href=data;a.download="menupro-qr.png";a.click();
+}
+</script>
+{% endblock %}

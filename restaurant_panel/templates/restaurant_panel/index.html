@@ -1,0 +1,27 @@
+{% extends "restaurant_panel/base.html" %}
+{% block title %}انتخاب رستوران{% endblock %}
+{% block header_title %}انتخاب رستوران{% endblock %}
+{% block content %}
+<div class="page-heading">
+    <div><span class="eyebrow">YOUR RESTAURANTS</span>
+    <h1>رستوران موردنظر را انتخاب کنید</h1>
+    <p>برای ورود به داشبورد مدیریت یکی از رستورانهای زیر را انتخاب کنید.</p></div>
+</div>
+{% if restaurants %}
+<div class="restaurant-grid">
+    {% for r in restaurants %}
+    <a class="restaurant-card" href="{% url 'panel:dashboard' r.slug %}">
+        <div class="restaurant-card-icon">{{ r.name|slice:":1" }}</div>
+        <h3>{{ r.name }}</h3><span>ورود به مدیریت ←</span>
+    </a>
+    {% endfor %}
+</div>
+{% else %}
+<div class="empty-state">
+    <div class="empty-icon">⌂</div>
+    <h2>هنوز رستورانی به حساب شما متصل نشده است</h2>
+    <p>ابتدا در بخش مدیریت اصلی یک رستوران ایجاد کنید و حساب کاربری خود را به آن متصل کنید.</p>
+    <a class="btn btn-primary" href="/admin/">ورود به مدیریت اصلی</a>
+</div>
+{% endif %}
+{% endblock %}

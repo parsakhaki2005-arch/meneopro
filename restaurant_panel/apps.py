@@ -1,0 +1,6 @@
+from django.apps import AppConfig
+
+class RestaurantPanelConfig(AppConfig):
+    default_auto_field = "django.db.models.BigAutoField"
+    name = "restaurant_panel"
+    verbose_name = "پنل مدیریت رستوران"
